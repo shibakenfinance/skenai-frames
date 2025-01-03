@@ -3,7 +3,8 @@ const http = require('http');
 function generateFrameHtml(baseUrl) {
     // Using a reliable image hosting service
     const imageUrl = 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=SKENAI+Training';
-    const postUrl = `${baseUrl}/frames/training`;
+    // Use the Render URL
+    const postUrl = 'https://skenai-frames-1.onrender.com/frames/training';
     
     return `<!DOCTYPE html>
 <html>
@@ -31,11 +32,6 @@ const server = http.createServer((req, res) => {
     const timestamp = new Date().toISOString();
     console.log(`${timestamp} - ${req.method} ${req.url}`);
     
-    // Get base URL from request headers
-    const protocol = req.headers['x-forwarded-proto'] || 'http';
-    const host = req.headers['x-forwarded-host'] || req.headers.host;
-    const baseUrl = `${protocol}://${host}`;
-    
     if (req.method === 'OPTIONS') {
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -46,7 +42,7 @@ const server = http.createServer((req, res) => {
     }
 
     if (req.url === '/frames/training') {
-        const html = generateFrameHtml(baseUrl);
+        const html = generateFrameHtml();
         res.writeHead(200, {
             'Content-Type': 'text/html',
             'Access-Control-Allow-Origin': '*',
