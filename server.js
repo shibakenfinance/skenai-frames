@@ -299,8 +299,16 @@ const server = http.createServer((req, res) => {
                             message = '❌ Try again!';
                             userState.quizScores[currentState] = false;
                         }
-                    } else if (buttonIndex === 1 && content.nextState) {
-                        currentState = content.nextState;
+                    } else if (buttonIndex === 1) {
+                        // If it's a lesson and first button is clicked, go to quiz
+                        if (content.nextState && content.nextState.includes('quiz')) {
+                            currentState = content.nextState;
+                        }
+                    } else if (buttonIndex === 2) {
+                        // Second button always goes to progress except in quizzes
+                        if (!currentState.includes('quiz')) {
+                            currentState = 'progress';
+                        }
                     }
                     
                     // Update user's last state
