@@ -100,9 +100,9 @@ const courseContent = {
         nextState: 'lesson5'
     },
     lesson5: {
-        image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Lesson+5:+Integration',
-        title: 'Lesson 5: Yardi Integration',
-        description: 'Connecting traditional real estate with Web3',
+        image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Lesson+5:+Tokenomics',
+        title: 'Lesson 5: DAO Tokenomics',
+        description: 'Learn about token distribution, incentives, and community building',
         buttons: [
             { text: 'Continue' },
             { text: 'Take Quiz' }
@@ -110,12 +110,12 @@ const courseContent = {
         nextState: 'lesson5_quiz'
     },
     lesson5_quiz: {
-        image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Quiz:+Integration',
-        title: 'Quiz: Yardi Integration',
-        description: 'SKENAI-Yardi integration enables:',
+        image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Quiz:+Tokenomics',
+        title: 'Quiz: DAO Tokenomics',
+        description: 'What creates a sustainable DAO economy?',
         buttons: [
-            { text: 'Data Viewing Only' },
-            { text: 'Full Management' }
+            { text: 'High Initial Supply' },
+            { text: 'Value-Aligned Incentives' }
         ],
         correctAnswer: 2,
         nextState: 'completion'
