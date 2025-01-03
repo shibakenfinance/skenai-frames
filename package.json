@@ -1,0 +1,14 @@
+{
+  "name": "skenai-frames",
+  "version": "1.0.0",
+  "description": "SKENAI Training Frames for Farcaster",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
