@@ -1,10 +1,9 @@
 const http = require('http');
 
-function generateFrameHtml() {
+function generateFrameHtml(baseUrl) {
     // Using a reliable image hosting service
     const imageUrl = 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=SKENAI+Training';
-    // This will be updated with the actual deployment URL
-    const postUrl = 'https://skenai-frames.onrender.com/frames/training';
+    const postUrl = `${baseUrl}/frames/training`;
     
     return `<!DOCTYPE html>
 <html>
@@ -23,12 +22,19 @@ function generateFrameHtml() {
 </head>
 <body>
     <img src="${imageUrl}" alt="SKENAI Training" style="width: 100%; max-width: 1200px;">
+    <p>Server is running!</p>
 </body>
 </html>`;
 }
 
 const server = http.createServer((req, res) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    const timestamp = new Date().toISOString();
+    console.log(`${timestamp} - ${req.method} ${req.url}`);
+    
+    // Get base URL from request headers
+    const protocol = req.headers['x-forwarded-proto'] || 'http';
+    const host = req.headers['x-forwarded-host'] || req.headers.host;
+    const baseUrl = `${protocol}://${host}`;
     
     if (req.method === 'OPTIONS') {
         res.setHeader('Access-Control-Allow-Origin', '*');
@@ -40,7 +46,7 @@ const server = http.createServer((req, res) => {
     }
 
     if (req.url === '/frames/training') {
-        const html = generateFrameHtml();
+        const html = generateFrameHtml(baseUrl);
         res.writeHead(200, {
             'Content-Type': 'text/html',
             'Access-Control-Allow-Origin': '*',
@@ -49,6 +55,12 @@ const server = http.createServer((req, res) => {
             'Expires': '0'
         });
         res.end(html);
+    } else if (req.url === '/health') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: 'healthy', timestamp }));
+    } else if (req.url === '/') {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end('<h1>SKENAI Frames Server</h1><p>Server is running! Try <a href="/frames/training">/frames/training</a></p>');
     } else {
         res.writeHead(404);
         res.end('Not Found');
@@ -58,4 +70,8 @@ const server = http.createServer((req, res) => {
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
+    console.log('Available endpoints:');
+    console.log('  - GET  /              (Home page)');
+    console.log('  - GET  /frames/training (Frame endpoint)');
+    console.log('  - GET  /health        (Health check)');
 });
