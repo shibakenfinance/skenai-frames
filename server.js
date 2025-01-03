@@ -118,6 +118,27 @@ const courseContent = {
             { text: 'Value-Aligned Incentives' }
         ],
         correctAnswer: 2,
+        nextState: 'lesson6'
+    },
+    lesson6: {
+        image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Lesson+6:+Everstrike',
+        title: 'Lesson 6: Everstrike Protocol',
+        description: 'Understanding the Everstrike perpetual liquidity protocol and its role in SKENAI',
+        buttons: [
+            { text: 'Continue' },
+            { text: 'Take Quiz' }
+        ],
+        nextState: 'lesson6_quiz'
+    },
+    lesson6_quiz: {
+        image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Quiz:+Everstrike',
+        title: 'Quiz: Everstrike Protocol',
+        description: 'What makes Everstrike unique?',
+        buttons: [
+            { text: 'Regular AMM' },
+            { text: 'Perpetual Liquidity' }
+        ],
+        correctAnswer: 2,
         nextState: 'completion'
     },
     completion: {
