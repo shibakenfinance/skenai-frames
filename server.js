@@ -10,7 +10,7 @@ const courseContent = {
         title: 'Welcome to SKENAI Academy',
         description: 'Learn about Web3 and DAOs',
         buttons: [
-            { text: 'Start Learning' },
+            { text: 'Start Course' },
             { text: 'View Progress' }
         ],
         nextState: 'lesson1'
@@ -20,8 +20,8 @@ const courseContent = {
         title: 'Lesson 1: What is a DAO?',
         description: 'Understanding Decentralized Autonomous Organizations',
         buttons: [
-            { text: 'Continue' },
-            { text: 'Take Quiz' }
+            { text: 'Take Quiz' },
+            { text: 'View Progress' }
         ],
         nextState: 'lesson1_quiz'
     },
@@ -34,15 +34,16 @@ const courseContent = {
             { text: 'Smart Contracts' }
         ],
         correctAnswer: 2,
-        nextState: 'lesson2'
+        nextState: 'lesson2',
+        xpReward: 100
     },
     lesson2: {
         image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Lesson+2:+SKENAI+Features',
         title: 'Lesson 2: SKENAI Features',
         description: 'Exploring SKENAI DAO capabilities',
         buttons: [
-            { text: 'Continue' },
-            { text: 'Take Quiz' }
+            { text: 'Take Quiz' },
+            { text: 'View Progress' }
         ],
         nextState: 'lesson2_quiz'
     },
@@ -55,15 +56,16 @@ const courseContent = {
             { text: 'Full DAO Suite' }
         ],
         correctAnswer: 2,
-        nextState: 'lesson3'
+        nextState: 'lesson3',
+        xpReward: 150
     },
     lesson3: {
         image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Lesson+3:+Governance',
         title: 'Lesson 3: DAO Governance',
         description: 'Learn about voting mechanisms and proposal creation',
         buttons: [
-            { text: 'Continue' },
-            { text: 'Take Quiz' }
+            { text: 'Take Quiz' },
+            { text: 'View Progress' }
         ],
         nextState: 'lesson3_quiz'
     },
@@ -76,15 +78,16 @@ const courseContent = {
             { text: 'Quadratic Voting' }
         ],
         correctAnswer: 2,
-        nextState: 'lesson4'
+        nextState: 'lesson4',
+        xpReward: 200
     },
     lesson4: {
         image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Lesson+4:+Treasury',
         title: 'Lesson 4: DAO Treasury',
         description: 'Managing DAO assets and financial operations',
         buttons: [
-            { text: 'Continue' },
-            { text: 'Take Quiz' }
+            { text: 'Take Quiz' },
+            { text: 'View Progress' }
         ],
         nextState: 'lesson4_quiz'
     },
@@ -97,15 +100,16 @@ const courseContent = {
             { text: 'Multi-Asset' }
         ],
         correctAnswer: 2,
-        nextState: 'lesson5'
+        nextState: 'lesson5',
+        xpReward: 250
     },
     lesson5: {
         image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Lesson+5:+Tokenomics',
         title: 'Lesson 5: DAO Tokenomics',
         description: 'Learn about token distribution, incentives, and community building',
         buttons: [
-            { text: 'Continue' },
-            { text: 'Take Quiz' }
+            { text: 'Take Quiz' },
+            { text: 'View Progress' }
         ],
         nextState: 'lesson5_quiz'
     },
@@ -118,15 +122,16 @@ const courseContent = {
             { text: 'Value-Aligned Incentives' }
         ],
         correctAnswer: 2,
-        nextState: 'lesson6'
+        nextState: 'lesson6',
+        xpReward: 300
     },
     lesson6: {
         image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Lesson+6:+Everstrike',
         title: 'Lesson 6: Everstrike Protocol',
-        description: 'Understanding the Everstrike perpetual liquidity protocol and its role in SKENAI',
+        description: 'Understanding the Everstrike perpetual liquidity protocol',
         buttons: [
-            { text: 'Continue' },
-            { text: 'Take Quiz' }
+            { text: 'Take Quiz' },
+            { text: 'View Progress' }
         ],
         nextState: 'lesson6_quiz'
     },
@@ -139,7 +144,30 @@ const courseContent = {
             { text: 'Perpetual Liquidity' }
         ],
         correctAnswer: 2,
-        nextState: 'completion'
+        nextState: 'lesson7',
+        xpReward: 350
+    },
+    lesson7: {
+        image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Lesson+7:+XP+System',
+        title: 'Lesson 7: Experience Points',
+        description: 'Understanding SKENAI\'s XP and leveling system',
+        buttons: [
+            { text: 'Take Quiz' },
+            { text: 'View Progress' }
+        ],
+        nextState: 'lesson7_quiz'
+    },
+    lesson7_quiz: {
+        image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Quiz:+XP+System',
+        title: 'Quiz: XP System',
+        description: 'How do you earn XP in SKENAI?',
+        buttons: [
+            { text: 'Only by Trading' },
+            { text: 'Multiple Activities' }
+        ],
+        correctAnswer: 2,
+        nextState: 'completion',
+        xpReward: 400
     },
     completion: {
         image: 'https://placehold.co/1200x630/1a1a1a/ffffff/png?text=Course+Completed!',
@@ -147,7 +175,7 @@ const courseContent = {
         description: 'You\'ve completed the SKENAI basics course',
         buttons: [
             { text: 'View Certificate' },
-            { text: 'View Progress' }
+            { text: 'Share Progress' }
         ]
     },
     progress: {
@@ -165,7 +193,8 @@ function calculateProgress(userId) {
     const progress = userProgress.get(userId) || { 
         completedLessons: new Set(),
         quizScores: {},
-        lastState: 'welcome'
+        lastState: 'welcome',
+        xp: 0
     };
     
     const totalLessons = Object.keys(courseContent).filter(k => k.includes('lesson')).length;
@@ -181,8 +210,8 @@ function generateFrameHtml(state = 'welcome', message = '', userId = null) {
     
     let description = content.description;
     if (state === 'progress' && userId) {
-        const { percentage } = calculateProgress(userId);
-        description = `Course Progress: ${percentage}%\n${description}`;
+        const { percentage, progress } = calculateProgress(userId);
+        description = `Course Progress: ${percentage}%\nXP: ${progress.xp}\n${description}`;
     }
     
     return `<!DOCTYPE html>
@@ -246,7 +275,8 @@ const server = http.createServer((req, res) => {
                         userProgress.set(userId, {
                             completedLessons: new Set(),
                             quizScores: {},
-                            lastState: 'welcome'
+                            lastState: 'welcome',
+                            xp: 0
                         });
                     }
                     
@@ -264,6 +294,7 @@ const server = http.createServer((req, res) => {
                             currentState = content.nextState;
                             userState.completedLessons.add(currentState);
                             userState.quizScores[currentState] = true;
+                            userState.xp += content.xpReward;
                         } else {
                             message = '❌ Try again!';
                             userState.quizScores[currentState] = false;
