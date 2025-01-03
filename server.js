@@ -227,8 +227,9 @@ function generateFrameHtml(state = 'welcome', message = '', userId = null) {
     ${content.buttons.map((btn, index) => 
         `<meta property="fc:frame:button:${index + 1}" content="${btn.text}" />`
     ).join('\n    ')}
-    ${message ? `<meta property="fc:frame:state" content="${message}" />` : ''}
     <meta property="fc:frame:post_url" content="${postUrl}" />
+    ${state ? `<meta property="fc:frame:state" content="${state}" />` : ''}
+    ${message ? `<meta property="fc:frame:message" content="${message}" />` : ''}
     <meta property="fc:frame:aspect_ratio" content="1.91:1" />
 </head>
 <body>
@@ -266,9 +267,14 @@ const server = http.createServer((req, res) => {
                 
                 try {
                     const data = JSON.parse(body);
+                    console.log('Parsed data:', data); // Debug log
+                    
                     const buttonIndex = data?.untrustedData?.buttonIndex;
                     const userId = data?.untrustedData?.fid || 'anonymous';
                     currentState = data?.untrustedData?.state || 'welcome';
+                    
+                    console.log('Current state:', currentState); // Debug log
+                    console.log('Button pressed:', buttonIndex); // Debug log
                     
                     // Initialize or get user progress
                     if (!userProgress.has(userId)) {
@@ -283,11 +289,21 @@ const server = http.createServer((req, res) => {
                     const userState = userProgress.get(userId);
                     const content = courseContent[currentState];
                     
+                    console.log('User state:', userState); // Debug log
+                    console.log('Content:', content); // Debug log
+                    
                     // Handle different states
-                    if (currentState === 'welcome' && buttonIndex === 2) {
-                        currentState = 'progress';
-                    } else if (currentState === 'progress' && buttonIndex === 1) {
-                        currentState = userState.lastState || 'lesson1';
+                    if (currentState === 'welcome') {
+                        if (buttonIndex === 1) {
+                            currentState = 'lesson1';
+                            message = 'Welcome to Lesson 1!';
+                        } else if (buttonIndex === 2) {
+                            currentState = 'progress';
+                        }
+                    } else if (currentState === 'progress') {
+                        if (buttonIndex === 1) {
+                            currentState = userState.lastState || 'lesson1';
+                        }
                     } else if (currentState.includes('quiz')) {
                         if (buttonIndex === content.correctAnswer) {
                             message = '✅ Correct! Moving to next lesson...';
@@ -299,20 +315,22 @@ const server = http.createServer((req, res) => {
                             message = '❌ Try again!';
                             userState.quizScores[currentState] = false;
                         }
-                    } else if (buttonIndex === 1) {
-                        // If it's a lesson and first button is clicked, go to quiz
-                        if (content.nextState && content.nextState.includes('quiz')) {
+                    } else if (currentState.includes('lesson')) {
+                        if (buttonIndex === 1) {
                             currentState = content.nextState;
-                        }
-                    } else if (buttonIndex === 2) {
-                        // Second button always goes to progress except in quizzes
-                        if (!currentState.includes('quiz')) {
+                            message = 'Time for a quiz!';
+                        } else if (buttonIndex === 2) {
                             currentState = 'progress';
                         }
                     }
                     
-                    // Update user's last state
-                    userState.lastState = currentState;
+                    // Update user's last state if it's not a progress view
+                    if (currentState !== 'progress') {
+                        userState.lastState = currentState;
+                    }
+                    
+                    console.log('New state:', currentState); // Debug log
+                    console.log('Message:', message); // Debug log
                     
                     const html = generateFrameHtml(currentState, message, userId);
                     res.writeHead(200, {
